@@ -1,0 +1,20 @@
+[
+  {
+    "name": "default",
+    "type": "postgres",
+    "host": "198.199.76.252",
+    "port": "5432",
+    "username": "mbbtest",
+    "password": "mbbtest",
+    "database": "mbbtestdb",
+    "entities": [
+      "./src/modules/**/infra/typeorm/entities/*.ts"
+    ],
+    "migrations": [
+      "./src/shared/infra/typeorm/migrations/*.ts"
+    ],
+    "cli": {
+      "migrationsDir": "./src/shared/infra/typeorm/migrations"
+    }
+  }
+]
