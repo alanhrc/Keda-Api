@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import Photo from '@modules/photos/infra/typeorm/entities/Photo';
 
 @Entity('products')
 class Product {
@@ -43,6 +46,9 @@ class Product {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Photo, photo => photo.product)
+  photos: Photo[];
 }
 
 export default Product;

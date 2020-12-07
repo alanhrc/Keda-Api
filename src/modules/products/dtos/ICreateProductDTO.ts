@@ -4,7 +4,6 @@ export default interface ICreateProductDTO {
   number_code: string;
   specific_code: string;
   observation: string;
-  type: string;
   sector: string;
   company: string;
   isActive?: boolean;
