@@ -47,7 +47,7 @@ class Photo {
 
     switch (uploadConfig.driver) {
       case 'disk':
-        return `${process.env.APP_API_URL}/photos/${this.path}`;
+        return `${process.env.APP_API_URL}/files/${this.path}`;
 
       case 's3':
         return `https://${process.env.AWS_BUCKET}.s3.amazonaws.com/${this.path}`;
