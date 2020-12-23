@@ -33,9 +33,7 @@
     "tsyringe": "^4.3.0",
     "typeorm": "^0.2.25",
     "uuidv4": "^6.1.0",
-    "ts-node-dev": "^1.0.0-pre.44"
-  },
-  "devDependencies": {
+    "ts-node-dev": "^1.0.0-pre.44",
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.10.5",
     "@babel/node": "^7.10.5",
@@ -69,5 +67,8 @@
     "ts-jest": "^26.1.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.9.5"
+  },
+  "devDependencies": {
+
   }
 }
