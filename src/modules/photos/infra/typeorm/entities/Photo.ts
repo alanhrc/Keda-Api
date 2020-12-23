@@ -23,7 +23,6 @@ class Photo {
   @Column()
   path: string;
 
-  @Exclude()
   @Column()
   product_id: string;
 
