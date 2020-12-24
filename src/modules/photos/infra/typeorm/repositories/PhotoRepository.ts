@@ -32,7 +32,9 @@ class PhotoRepository implements IPhotoRepository {
   }
 
   public async index(): Promise<Photo[]> {
-    const photos = await this.ormRepository.find();
+    const photos = await this.ormRepository.find({
+      order: { created_at: 'ASC' },
+    });
 
     return photos;
   }
