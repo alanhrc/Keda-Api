@@ -20,12 +20,7 @@ module.exports = {
     }],
     "babel-plugin-transform-typescript-metadata",
     ["@babel/plugin-proposal-decorators", { "legacy": true }],
-    ["@babel/plugin-proposal-class-properties", { "loose": true }],
-    ["@babel/plugin-transform-modules-commonjs", {
-      "allowTopLevelThis": true,
-      "loose": true,
-      "lazy": true
-    }]
+    ["@babel/plugin-proposal-class-properties", { "loose": true }]
   ],
   ignore: [
     '**/*.spec.ts'
