@@ -53,6 +53,14 @@ class FakeProductsRepository implements IProductRepository {
 
     this.products.splice(findIndex, 1);
   }
+
+  public async findByCode(code: string): Promise<Product | undefined> {
+    const findProduct = this.products.find(
+      product => product.number_code === code,
+    );
+
+    return findProduct;
+  }
 }
 
 export default FakeProductsRepository;

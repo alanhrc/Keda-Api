@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 
 import IProductRepository from '@modules/products/repositories/IProductRepository';
 import Product from '@modules/products/infra/typeorm/entities/Product';
+import AppError from '@shared/errors/AppError';
 
 interface IRequest {
   description: string;
@@ -31,6 +32,14 @@ class CreateProductService {
     company,
     quantity,
   }: IRequest): Promise<Product> {
+    const existentProduct = await this.productRepository.findByCode(
+      number_code,
+    );
+
+    if (existentProduct) {
+      throw new AppError('Este produto já esta cadastrado.');
+    }
+
     const product = await this.productRepository.create({
       description: description
         ? String(description).toUpperCase().trim()

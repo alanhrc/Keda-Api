@@ -9,4 +9,5 @@ export default interface IAppointmentsRepository {
   save(data: ICreateProductDTO): Promise<Product>;
   indexWithFilter(filter: string): Promise<Product[]>;
   destroy(id: string): Promise<void>;
+  findByCode(code: string): Promise<Product | undefined>;
 }

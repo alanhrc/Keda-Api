@@ -28,6 +28,7 @@ class ProductRepository implements IProductRepository {
   public async index(): Promise<Product[]> {
     const products = await this.ormRepository.find({
       where: { isActive: true },
+      order: { description: 'ASC' },
       relations: ['photos'],
     });
 
@@ -58,6 +59,7 @@ class ProductRepository implements IProductRepository {
           isActive: true,
         },
       ],
+      order: { description: 'ASC' },
       relations: ['photos'],
     });
 
@@ -66,6 +68,14 @@ class ProductRepository implements IProductRepository {
 
   public async destroy(id: string): Promise<void> {
     await this.ormRepository.delete(id);
+  }
+
+  public async findByCode(code: string): Promise<Product | undefined> {
+    const product = await this.ormRepository.findOne({
+      where: { number_code: code },
+    });
+
+    return product;
   }
 }
 
