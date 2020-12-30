@@ -51,6 +51,10 @@ class ProductRepository implements IProductRepository {
           isActive: true,
         },
         {
+          internal_code: Like(`%${filter}%`),
+          isActive: true,
+        },
+        {
           number_code: Like(`%${filter}%`),
           isActive: true,
         },
@@ -58,9 +62,13 @@ class ProductRepository implements IProductRepository {
           specific_code: Like(`%${filter}%`),
           isActive: true,
         },
+        {
+          observation: Like(`%${filter}%`),
+          isActive: true,
+        },
       ],
-      order: { description: 'ASC' },
       relations: ['photos'],
+      order: { description: 'ASC', photos: 'ASC' },
     });
 
     return products;

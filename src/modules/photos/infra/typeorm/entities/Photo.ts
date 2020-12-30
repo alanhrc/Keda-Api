@@ -26,7 +26,6 @@ class Photo {
   @Column()
   product_id: string;
 
-  @Exclude()
   @CreateDateColumn()
   created_at: Date;
 
