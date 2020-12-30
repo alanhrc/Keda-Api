@@ -68,7 +68,7 @@ class ProductRepository implements IProductRepository {
         },
       ],
       relations: ['photos'],
-      order: { description: 'ASC', photos: 'ASC' },
+      order: { description: 'ASC' },
     });
 
     return products;
