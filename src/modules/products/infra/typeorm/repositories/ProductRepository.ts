@@ -85,6 +85,21 @@ class ProductRepository implements IProductRepository {
 
     return product;
   }
+
+  public async indexCategory(category: string): Promise<Product[]> {
+    const products = await this.ormRepository.find({
+      where: [
+        {
+          sector: Like(`%${category}%`),
+          isActive: true,
+        },
+      ],
+      relations: ['photos'],
+      order: { description: 'ASC' },
+    });
+
+    return products;
+  }
 }
 
 export default ProductRepository;

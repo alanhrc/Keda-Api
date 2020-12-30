@@ -8,6 +8,7 @@ import ShowProductService from '@modules/products/services/ShowProductService';
 import UpdateProductService from '@modules/products/services/UpdateProductService';
 import ListProductWithFilterService from '@modules/products/services/ListProductWithFilterService';
 import DeleteProductService from '@modules/products/services/DeleteProductService';
+import ListProductCategoryService from '@modules/products/services/ListProductCategoryService';
 
 export default class ProductController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -115,5 +116,22 @@ export default class ProductController {
     await deleteProductService.execute({ id });
 
     return response.json({ message: 'Product successfully deleted ' });
+  }
+
+  public async indexCategory(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { category } = request.params;
+
+    const listProductCategoryService = container.resolve(
+      ListProductCategoryService,
+    );
+
+    const products = await listProductCategoryService.execute({
+      category: String(category),
+    });
+
+    return response.json(classToClass(products));
   }
 }

@@ -10,4 +10,5 @@ export default interface IAppointmentsRepository {
   indexWithFilter(filter: string): Promise<Product[]>;
   destroy(id: string): Promise<void>;
   findByCode(code: string): Promise<Product | undefined>;
+  indexCategory(category: string): Promise<Product[]>;
 }

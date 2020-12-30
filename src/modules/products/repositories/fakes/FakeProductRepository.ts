@@ -61,6 +61,14 @@ class FakeProductsRepository implements IProductRepository {
 
     return findProduct;
   }
+
+  public async indexCategory(category: string): Promise<Product[]> {
+    const products = this.products.filter(
+      product => product.sector === category,
+    );
+
+    return products;
+  }
 }
 
 export default FakeProductsRepository;

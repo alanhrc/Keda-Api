@@ -53,4 +53,6 @@ productsRouter.post('/filter', productController.indexWithFilter);
 
 productsRouter.delete('/:id', productController.destroy);
 
+productsRouter.post('/category/:category', productController.indexCategory);
+
 export default productsRouter;
