@@ -15,9 +15,7 @@ class ListProductCategoryService {
   ) {}
 
   public async execute({ category }: IProductData): Promise<Product[]> {
-    const products = await this.productRepository.indexCategory(
-      String(category).toUpperCase().trim(),
-    );
+    const products = await this.productRepository.indexCategory(category);
 
     return products;
   }

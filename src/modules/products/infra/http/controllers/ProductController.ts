@@ -122,14 +122,14 @@ export default class ProductController {
     request: Request,
     response: Response,
   ): Promise<Response> {
-    const { category } = request.params;
+    const { category } = request.body;
 
     const listProductCategoryService = container.resolve(
       ListProductCategoryService,
     );
 
     const products = await listProductCategoryService.execute({
-      category: String(category),
+      category,
     });
 
     return response.json(classToClass(products));

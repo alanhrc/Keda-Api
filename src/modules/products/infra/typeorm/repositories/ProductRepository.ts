@@ -87,6 +87,15 @@ class ProductRepository implements IProductRepository {
   }
 
   public async indexCategory(category: string): Promise<Product[]> {
+    if (!category) {
+      const products = await this.ormRepository.find({
+        relations: ['photos'],
+        order: { description: 'ASC' },
+      });
+
+      return products;
+    }
+
     const products = await this.ormRepository.find({
       where: [
         {
