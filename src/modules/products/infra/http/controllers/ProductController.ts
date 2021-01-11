@@ -9,6 +9,8 @@ import UpdateProductService from '@modules/products/services/UpdateProductServic
 import ListProductWithFilterService from '@modules/products/services/ListProductWithFilterService';
 import DeleteProductService from '@modules/products/services/DeleteProductService';
 import ListProductCategoryService from '@modules/products/services/ListProductCategoryService';
+import UpdateReleasedProductService from '@modules/products/services/UpdateReleasedProductService';
+import UpdatePhotoProfileProductService from '@modules/products/services/UpdatePhotoProfileProductService';
 
 export default class ProductController {
   public async create(request: Request, response: Response): Promise<Response> {
@@ -133,5 +135,42 @@ export default class ProductController {
     });
 
     return response.json(classToClass(products));
+  }
+
+  public async released(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { id } = request.params;
+
+    const updateReleasedProductService = container.resolve(
+      UpdateReleasedProductService,
+    );
+
+    const product = await updateReleasedProductService.execute({
+      id,
+    });
+
+    return response.json(classToClass(product));
+  }
+
+  public async photoProfile(
+    request: Request,
+    response: Response,
+  ): Promise<Response> {
+    const { id } = request.params;
+
+    const { namePhoto } = request.body
+
+    const updatePhotoProfileProductService = container.resolve(
+      UpdatePhotoProfileProductService,
+    );
+
+    const product = await updatePhotoProfileProductService.execute({
+      id,
+      namePhoto
+    });
+
+    return response.json(classToClass(product));
   }
 }

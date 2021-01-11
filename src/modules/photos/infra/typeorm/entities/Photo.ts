@@ -19,7 +19,6 @@ class Photo {
   @PrimaryGeneratedColumn('increment')
   id: string;
 
-  @Exclude()
   @Column()
   path: string;
 

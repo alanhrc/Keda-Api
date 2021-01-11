@@ -1,6 +1,7 @@
 import { injectable, inject } from 'tsyringe';
 
 import IPhotoRepository from '@modules/photos/repositories/IPhotoRepository';
+import IProductRepository from '@modules/products/repositories/IProductRepository';
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 import AppError from '@shared/errors/AppError';
 
@@ -14,6 +15,9 @@ class DeletePhotoService {
     @inject('PhotoRepository')
     private photoRepository: IPhotoRepository,
 
+    @inject('ProductRepository')
+    private productRepository: IProductRepository,
+
     @inject('StorageProvider')
     private storageProvider: IStorageProvider,
   ) {}
@@ -24,6 +28,16 @@ class DeletePhotoService {
     if (!photo) {
       throw new AppError('Photo not found.');
     }
+
+    const product = await this.productRepository.findById(photo.product_id);
+
+    if (!product) {
+      throw new AppError('Product not found.');
+    }
+
+    product.photo_profile = '';
+
+    await this.productRepository.save(product);
 
     await this.storageProvider.deleteFile(photo.path);
 

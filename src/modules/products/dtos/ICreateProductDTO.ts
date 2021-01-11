@@ -8,4 +8,6 @@ export default interface ICreateProductDTO {
   company: string;
   isActive?: boolean;
   quantity: number;
+  released?: boolean;
+  photo_profile?: string;
 }
