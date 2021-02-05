@@ -28,7 +28,7 @@ class DiskStorageProvider implements IStorageProvider {
 
     const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
-    const ContentType = mime.getType(newPathImageResized);
+    const ContentType = mime.extension(newPathImageResized);
 
     if (!ContentType) {
       throw new Error('File not found.');

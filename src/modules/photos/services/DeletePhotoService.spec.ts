@@ -1,21 +1,25 @@
 import AppError from '@shared/errors/AppError';
 
 import FakePhotoRepository from '@modules/photos/repositories/fakes/FakePhotoRepository';
-import FakeStorageAvatar from '@shared/container/providers/StorageProvider/fakes/FakeStorageAvatar';
+import FakeProductRepository from '@modules/products/repositories/fakes/FakeProductRepository';
+import FakeStorageProvider from '@shared/container/providers/StorageProvider/fakes/FakeStorageAvatar';
 import DeletePhotoService from '@modules/photos/services/DeletePhotoService';
 
 let fakePhotoRepository: FakePhotoRepository;
-let fakeStorageAvatar: FakeStorageAvatar;
+let fakeProductRepository: FakeProductRepository;
+let fakeStorageProvider: FakeStorageProvider;
 let deletePhotoService: DeletePhotoService;
 
 describe('DeletePhoto', () => {
   beforeEach(() => {
     fakePhotoRepository = new FakePhotoRepository();
-    fakeStorageAvatar = new FakeStorageAvatar();
+    fakeProductRepository = new FakeProductRepository();
+    fakeStorageProvider = new FakeStorageProvider();
 
     deletePhotoService = new DeletePhotoService(
       fakePhotoRepository,
-      fakeStorageAvatar,
+      fakeProductRepository,
+      fakeStorageProvider,
     );
   });
 
