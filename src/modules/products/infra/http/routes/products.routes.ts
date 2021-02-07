@@ -55,8 +55,8 @@ productsRouter.delete('/:id', productController.destroy);
 
 productsRouter.post('/category', productController.indexCategory);
 
-productsRouter.patch('/released/:id', productController.released)
+productsRouter.patch('/released/:id', productController.released);
 
-productsRouter.patch('/photoProfile/:id', productController.photoProfile)
+productsRouter.patch('/photoProfile/:id', productController.photoProfile);
 
 export default productsRouter;

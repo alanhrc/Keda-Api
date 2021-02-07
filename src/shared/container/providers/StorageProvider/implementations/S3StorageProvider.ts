@@ -18,17 +18,23 @@ class DiskStorageProvider implements IStorageProvider {
   public async saveFile(file: string): Promise<string> {
     const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
-    await sharp(originalPath)
-      .rotate()
-      .resize(600, 1000, {
-        fit: 'inside',
-      })
-      .jpeg({ quality: 80 })
-      .toFile(path.resolve(uploadConfig.uploadsFolder, file));
+    try {
+      await sharp(originalPath)
+        .rotate()
+        .resize(600, 1000, {
+          fit: 'inside',
+        })
+        .jpeg({ quality: 80 })
+        .toFile(path.resolve(uploadConfig.uploadsFolder, file));
+    } catch (err) {
+      console.log(err);
+
+      await fs.promises.unlink(originalPath);
+    }
 
     const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
-    const ContentType = mime.extension(newPathImageResized);
+    const ContentType = mime.getType(newPathImageResized);
 
     if (!ContentType) {
       throw new Error('File not found.');
@@ -36,20 +42,29 @@ class DiskStorageProvider implements IStorageProvider {
 
     const fileContent = await fs.promises.readFile(newPathImageResized);
 
-    await this.client
-      .putObject({
-        Bucket: `${process.env.AWS_BUCKET}`,
-        Key: file,
-        ACL: 'public-read',
-        Body: fileContent,
-        ContentType,
-      })
-      .promise();
+    try {
+      await this.client
+        .putObject({
+          Bucket: `${process.env.AWS_BUCKET}`,
+          Key: file,
+          ACL: 'public-read',
+          Body: fileContent,
+          ContentType,
+        })
+        .promise();
 
-    await fs.promises.unlink(originalPath);
-    await fs.promises.unlink(newPathImageResized);
+      await fs.promises.unlink(originalPath);
+      await fs.promises.unlink(newPathImageResized);
 
-    return file;
+      return file;
+    } catch (err) {
+      console.log(err);
+
+      await fs.promises.unlink(originalPath);
+      await fs.promises.unlink(newPathImageResized);
+
+      return err;
+    }
   }
 
   public async deleteFile(file: string): Promise<void> {

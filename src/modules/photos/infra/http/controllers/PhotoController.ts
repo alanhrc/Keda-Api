@@ -22,7 +22,7 @@ export default class PhotoController {
     try {
       const photoSaved = await createPhotoService.execute({
         product_id,
-        path: photo.filename,
+        filename: photo.filename,
       });
 
       return response.json(classToClass(photoSaved));
