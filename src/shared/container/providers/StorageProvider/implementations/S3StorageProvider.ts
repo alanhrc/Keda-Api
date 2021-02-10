@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import mime from 'mime';
+// import mime from 'mime';
 import sharp from 'sharp';
 import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
-class DiskStorageProvider implements IStorageProvider {
+class S3StorageProvider implements IStorageProvider {
   private client: S3;
 
   constructor() {
@@ -18,23 +18,28 @@ class DiskStorageProvider implements IStorageProvider {
   public async saveFile(file: string): Promise<string> {
     const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
-    try {
-      await sharp(originalPath)
-        .rotate()
-        .resize(600, 1000, {
-          fit: 'inside',
-        })
-        .jpeg({ quality: 80 })
-        .toFile(path.resolve(uploadConfig.uploadsFolder, file));
-    } catch (err) {
-      console.log(err);
+    let ContentType = '';
+    const photo = await sharp(originalPath)
+      .rotate()
+      .resize(600, 1000, {
+        fit: 'inside',
+      })
+      .jpeg({ quality: 80 })
+      .toFile(path.resolve(uploadConfig.uploadsFolder, file))
+      .then(photoShaped => {
+        ContentType = `image/${photoShaped.format}`;
+      })
+      .catch(err => {
+        console.log(err);
 
-      await fs.promises.unlink(originalPath);
-    }
+        fs.promises.unlink(originalPath);
+      });
+
+    console.log('sharp', photo);
 
     const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
-    const ContentType = mime.getType(newPathImageResized);
+    // const ContentType = mime.getType(newPathImageResized);
 
     if (!ContentType) {
       throw new Error('File not found.');
@@ -42,29 +47,23 @@ class DiskStorageProvider implements IStorageProvider {
 
     const fileContent = await fs.promises.readFile(newPathImageResized);
 
-    try {
-      await this.client
-        .putObject({
-          Bucket: `${process.env.AWS_BUCKET}`,
-          Key: file,
-          ACL: 'public-read',
-          Body: fileContent,
-          ContentType,
-        })
-        .promise();
+    await this.client
+      .putObject({
+        Bucket: `${process.env.AWS_BUCKET}`,
+        Key: file,
+        ACL: 'public-read',
+        Body: fileContent,
+        ContentType,
+      })
+      .promise()
+      .catch(err => {
+        console.log(err);
+      });
 
-      await fs.promises.unlink(originalPath);
-      await fs.promises.unlink(newPathImageResized);
+    await fs.promises.unlink(originalPath);
+    await fs.promises.unlink(newPathImageResized);
 
-      return file;
-    } catch (err) {
-      console.log(err);
-
-      await fs.promises.unlink(originalPath);
-      await fs.promises.unlink(newPathImageResized);
-
-      return err;
-    }
+    return file;
   }
 
   public async deleteFile(file: string): Promise<void> {
@@ -77,4 +76,4 @@ class DiskStorageProvider implements IStorageProvider {
   }
 }
 
-export default DiskStorageProvider;
+export default S3StorageProvider;

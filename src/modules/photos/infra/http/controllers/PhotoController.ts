@@ -13,6 +13,8 @@ export default class PhotoController {
 
     const photo = request.file as Express.Multer.File;
 
+    console.log(photo);
+
     if (!product_id || !photo) {
       return response.json({ message: 'Product id and photo must be sent' });
     }

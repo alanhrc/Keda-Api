@@ -160,7 +160,7 @@ export default class ProductController {
   ): Promise<Response> {
     const { id } = request.params;
 
-    const { namePhoto } = request.body
+    const { namePhoto } = request.body;
 
     const updatePhotoProfileProductService = container.resolve(
       UpdatePhotoProfileProductService,
@@ -168,7 +168,7 @@ export default class ProductController {
 
     const product = await updatePhotoProfileProductService.execute({
       id,
-      namePhoto
+      namePhoto,
     });
 
     return response.json(classToClass(product));
