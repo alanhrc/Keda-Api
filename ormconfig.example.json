@@ -4,17 +4,17 @@
     "type": "postgres",
     "host": "localhost",
     "port": "5432",
-    "username": "tests",
-    "password": "tests",
-    "database": "tests",
+    "username": "test",
+    "password": "test",
+    "database": "testdb",
     "entities": [
-      "./src/modules/**/infra/typeorm/entities/*.ts"
+      "./dist/modules/**/infra/typeorm/entities/*.js"
     ],
     "migrations": [
-      "./src/shared/infra/typeorm/migrations/*.ts"
+      "./dist/shared/infra/typeorm/migrations/*.js"
     ],
     "cli": {
-      "migrationsDir": "./src/shared/infra/typeorm/migrations"
+      "migrationsDir": "./dist/shared/infra/typeorm/migrations"
     }
   }
 ]

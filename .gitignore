@@ -7,3 +7,5 @@ tmp/*
 !tmp/uploads/
 coverage/
 .github
+.env
+ormconfig.json
