@@ -40,10 +40,10 @@ class CreatePhotoService {
     }
 
     try {
-      const filenameSaved = await this.storageProvider.saveFile({
+      const filenameSaved = await this.storageProvider.saveFile(
         filename,
         mimetype,
-      });
+      );
 
       const photo = await this.photoRepository.create({
         product_id,
