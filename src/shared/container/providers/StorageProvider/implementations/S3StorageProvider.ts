@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 // import {} from 'mime';
-import mime from 'mime-types';
+// import mime from 'mime-types';
 // import sharp from 'sharp';
 import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
@@ -16,7 +16,7 @@ class S3StorageProvider implements IStorageProvider {
     });
   }
 
-  public async saveFile(file: string): Promise<string> {
+  public async saveFile(file: string, mimetype: string): Promise<string> {
     const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
     // await sharp(originalPath)
@@ -34,12 +34,12 @@ class S3StorageProvider implements IStorageProvider {
 
     // const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
-    const ContentType = mime.contentType(originalPath);
-    console.log(ContentType);
+    // const ContentType = mime.contentType(originalPath);
+    // console.log(ContentType);
 
-    if (!ContentType) {
-      throw new Error('File not found.');
-    }
+    // if (!ContentType) {
+    //   throw new Error('File not found.');
+    // }
 
     const fileContent = await fs.promises.readFile(originalPath);
 
@@ -49,7 +49,7 @@ class S3StorageProvider implements IStorageProvider {
         Key: file,
         ACL: 'public-read',
         Body: fileContent,
-        ContentType,
+        ContentType: mimetype,
       })
       .promise()
       .then(res => {

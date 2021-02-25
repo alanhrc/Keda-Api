@@ -25,6 +25,7 @@ export default class PhotoController {
       const photoSaved = await createPhotoService.execute({
         product_id,
         filename: photo.filename,
+        mimetype: photo.mimetype,
       });
 
       return response.json(classToClass(photoSaved));

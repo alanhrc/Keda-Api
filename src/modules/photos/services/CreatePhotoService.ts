@@ -12,6 +12,7 @@ import Photo from '@modules/photos/infra/typeorm/entities/Photo';
 interface IRequest {
   product_id: string;
   filename: string;
+  mimetype: string;
 }
 
 @injectable()
@@ -27,7 +28,11 @@ class CreatePhotoService {
     private photoRepository: IPhotoRepository,
   ) {}
 
-  public async execute({ product_id, filename }: IRequest): Promise<Photo> {
+  public async execute({
+    product_id,
+    filename,
+    mimetype,
+  }: IRequest): Promise<Photo> {
     const product = await this.productRepository.findById(product_id);
 
     if (!product) {
@@ -35,7 +40,10 @@ class CreatePhotoService {
     }
 
     try {
-      const filenameSaved = await this.storageProvider.saveFile(filename);
+      const filenameSaved = await this.storageProvider.saveFile({
+        filename,
+        mimetype,
+      });
 
       const photo = await this.photoRepository.create({
         product_id,
