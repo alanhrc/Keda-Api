@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-// import mime from 'mime';
+// import {} from 'mime';
+import mime from 'mime-types';
 import sharp from 'sharp';
 import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
@@ -18,28 +19,22 @@ class S3StorageProvider implements IStorageProvider {
   public async saveFile(file: string): Promise<string> {
     const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
-    let ContentType = '';
-    const photo = await sharp(originalPath)
+    await sharp(originalPath)
       .rotate()
       .resize(600, 1000, {
         fit: 'inside',
       })
       .jpeg({ quality: 80 })
       .toFile(path.resolve(uploadConfig.uploadsFolder, file))
-      .then(photoShaped => {
-        ContentType = `image/${photoShaped.format}`;
-      })
       .catch(async err => {
         await fs.promises.unlink(originalPath);
 
         console.log(err);
       });
 
-    console.log('sharp', photo);
-
     const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
-    // const ContentType = mime.getType(newPathImageResized);
+    const ContentType = mime.contentType(newPathImageResized);
 
     if (!ContentType) {
       throw new Error('File not found.');
@@ -47,7 +42,7 @@ class S3StorageProvider implements IStorageProvider {
 
     const fileContent = await fs.promises.readFile(newPathImageResized);
 
-    const awsResponse = await this.client
+    await this.client
       .putObject({
         Bucket: `${process.env.AWS_BUCKET}`,
         Key: file,
@@ -57,13 +52,14 @@ class S3StorageProvider implements IStorageProvider {
       })
       .promise()
       .then(res => {
-        return res;
+        console.log(res);
       })
-      .catch(err => {
+      .catch(async err => {
+        await fs.promises.unlink(originalPath);
+        await fs.promises.unlink(newPathImageResized);
+
         console.log(err);
       });
-
-    console.log(awsResponse);
 
     await fs.promises.unlink(originalPath);
     await fs.promises.unlink(newPathImageResized);
