@@ -29,10 +29,10 @@ class S3StorageProvider implements IStorageProvider {
       .then(photoShaped => {
         ContentType = `image/${photoShaped.format}`;
       })
-      .catch(err => {
-        console.log(err);
+      .catch(async err => {
+        await fs.promises.unlink(originalPath);
 
-        fs.promises.unlink(originalPath);
+        console.log(err);
       });
 
     console.log('sharp', photo);
@@ -47,7 +47,7 @@ class S3StorageProvider implements IStorageProvider {
 
     const fileContent = await fs.promises.readFile(newPathImageResized);
 
-    await this.client
+    const awsResponse = await this.client
       .putObject({
         Bucket: `${process.env.AWS_BUCKET}`,
         Key: file,
@@ -56,9 +56,14 @@ class S3StorageProvider implements IStorageProvider {
         ContentType,
       })
       .promise()
+      .then(res => {
+        return res;
+      })
       .catch(err => {
         console.log(err);
       });
+
+    console.log(awsResponse);
 
     await fs.promises.unlink(originalPath);
     await fs.promises.unlink(newPathImageResized);
