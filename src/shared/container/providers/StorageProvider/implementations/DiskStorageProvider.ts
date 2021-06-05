@@ -15,10 +15,11 @@ class DiskStorageProvider implements IStorageProvider {
 
     await sharp(originalPath)
       .rotate()
-      .resize(600, 1000, {
+      .resize(1280, 720, {
         fit: 'inside',
+        withoutEnlargement: true,
       })
-      .jpeg({ quality: 80 })
+      .toFormat('jpeg', { progressive: true, quality: 50 })
       .toFile(path.resolve(uploadConfig.uploadsFolder, file));
 
     await fs.promises.unlink(originalPath);

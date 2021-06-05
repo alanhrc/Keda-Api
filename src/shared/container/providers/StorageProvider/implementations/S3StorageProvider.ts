@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 // import {} from 'mime';
 // import mime from 'mime-types';
-// import sharp from 'sharp';
+import sharp from 'sharp';
 import aws, { S3 } from 'aws-sdk';
 import uploadConfig from '@config/upload';
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
@@ -16,23 +16,19 @@ class S3StorageProvider implements IStorageProvider {
     });
   }
 
-  public async saveFile(file: string, mimetype: string): Promise<string> {
+  public async saveFile(file: string, _mimetype: string): Promise<string> {
     const originalPath = path.resolve(uploadConfig.tmpFolder, file);
 
-    // await sharp(originalPath)
-    //   .rotate()
-    //   .resize(600, 1000, {
-    //     fit: 'inside',
-    //   })
-    //   .jpeg({ quality: 80 })
-    //   .toFile(path.resolve(uploadConfig.uploadsFolder, file))
-    //   .catch(async err => {
-    //     await fs.promises.unlink(originalPath);
+    await sharp(originalPath)
+      .rotate()
+      .resize(1280, 720, {
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .toFormat('jpeg', { progressive: true, quality: 50 })
+      .toFile(path.resolve(uploadConfig.uploadsFolder, file));
 
-    //     console.log(err);
-    //   });
-
-    // const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
+    const newPathImageResized = path.resolve(uploadConfig.uploadsFolder, file);
 
     // const ContentType = mime.contentType(originalPath);
     // console.log(ContentType);
@@ -41,7 +37,7 @@ class S3StorageProvider implements IStorageProvider {
     //   throw new Error('File not found.');
     // }
 
-    const fileContent = await fs.promises.readFile(originalPath);
+    const fileContent = await fs.promises.readFile(newPathImageResized);
 
     await this.client
       .putObject({
@@ -49,7 +45,7 @@ class S3StorageProvider implements IStorageProvider {
         Key: file,
         ACL: 'public-read',
         Body: fileContent,
-        ContentType: mimetype,
+        ContentType: 'image/jpeg',
       })
       .promise()
       .then(res => {
@@ -57,13 +53,13 @@ class S3StorageProvider implements IStorageProvider {
       })
       .catch(async err => {
         await fs.promises.unlink(originalPath);
-        // await fs.promises.unlink(newPathImageResized);
+        await fs.promises.unlink(newPathImageResized);
 
         console.log(err);
       });
 
     await fs.promises.unlink(originalPath);
-    // await fs.promises.unlink(newPathImageResized);
+    await fs.promises.unlink(newPathImageResized);
 
     return file;
   }
