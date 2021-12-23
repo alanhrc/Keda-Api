@@ -7,12 +7,11 @@ import IProductRepository from '@modules/products/repositories/IProductRepositor
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 import IPhotoRepository from '@modules/photos/repositories/IPhotoRepository';
 
-import Photo from '@modules/photos/infra/typeorm/entities/Photo';
+// import Photo from '@modules/photos/infra/typeorm/entities/Photo';
 
 interface IRequest {
   product_id: string;
-  filename: string;
-  mimetype: string;
+  file: Express.Multer.File;
 }
 
 @injectable()
@@ -28,11 +27,7 @@ class CreatePhotoService {
     private photoRepository: IPhotoRepository,
   ) {}
 
-  public async execute({
-    product_id,
-    filename,
-    mimetype,
-  }: IRequest): Promise<Photo> {
+  public async execute({ product_id, file }: IRequest): Promise<void> {
     const product = await this.productRepository.findById(product_id);
 
     if (!product) {
@@ -40,24 +35,19 @@ class CreatePhotoService {
     }
 
     try {
-      const filenameSaved = await this.storageProvider.saveFile(
-        filename,
-        mimetype,
-      );
+      const filenameSaved = await this.storageProvider.saveFile(file);
 
-      const photo = await this.photoRepository.create({
+      await this.photoRepository.create({
         product_id,
         path: filenameSaved,
       });
 
-      return photo;
+      return;
     } catch (err) {
       console.log(err);
 
-      const originalPath = path.resolve(uploadConfig.tmpFolder, filename);
+      const originalPath = path.resolve(uploadConfig.tmpFolder, file.filename);
       await fs.promises.unlink(originalPath);
-
-      return err;
     }
   }
 }

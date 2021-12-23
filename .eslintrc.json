@@ -20,6 +20,8 @@
         "prettier"
     ],
     "rules": {
+      "eqeqeq":"off",
+      "no-plusplus": "off",
       "@typescript-eslint/ban-types":"off",
       "camelcase": "off",
       "prettier/prettier": "error",

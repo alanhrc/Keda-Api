@@ -1,34 +1,21 @@
+import uploadAvatarConfig from '@config/upload';
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
-import uploadConfig from '@config/upload';
+
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 class DiskStorageProvider implements IStorageProvider {
-  public async saveFile(file: string): Promise<string> {
-    // await fs.promises.rename(
-    //   path.resolve(uploadConfig.tmpFolder, file),
-    //   path.resolve(uploadConfig.uploadsFolder, file),
-    // );
+  public async saveFile(file: Express.Multer.File): Promise<string> {
+    await fs.promises.rename(
+      path.resolve(uploadAvatarConfig.tmpFolder, file.filename),
+      path.resolve(uploadAvatarConfig.uploadsFolder, file.filename),
+    );
 
-    const originalPath = path.resolve(uploadConfig.tmpFolder, file);
-
-    await sharp(originalPath)
-      .rotate()
-      .resize(1280, 720, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
-      .toFormat('jpeg', { progressive: true, quality: 50 })
-      .toFile(path.resolve(uploadConfig.uploadsFolder, file));
-
-    await fs.promises.unlink(originalPath);
-
-    return file;
+    return file.filename;
   }
 
-  public async deleteFile(file: string): Promise<void> {
-    const filePath = path.resolve(uploadConfig.uploadsFolder, file);
+  public async deleteFile(filename: string): Promise<void> {
+    const filePath = path.resolve(uploadAvatarConfig.uploadsFolder, filename);
 
     try {
       await fs.promises.stat(filePath);

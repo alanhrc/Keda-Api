@@ -22,13 +22,12 @@ export default class PhotoController {
     const createPhotoService = container.resolve(CreatePhotoService);
 
     try {
-      const photoSaved = await createPhotoService.execute({
+      await createPhotoService.execute({
         product_id,
-        filename: photo.filename,
-        mimetype: photo.mimetype,
+        file: photo,
       });
 
-      return response.json(classToClass(photoSaved));
+      return response.status(200).send();
     } catch (err) {
       await fs.promises.stat(photo.path);
 
