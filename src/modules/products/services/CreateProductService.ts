@@ -60,8 +60,8 @@ class CreateProductService {
         : observation,
       sector: sector ? String(sector).toUpperCase().trim() : sector,
       company: company ? String(company).toUpperCase().trim() : company,
-      quantity: quantity || 0,
-      minimum_quantity: minimum_quantity || 0,
+      quantity: Number(quantity) || 0,
+      minimum_quantity: Number(minimum_quantity) || 0,
     });
 
     return product;

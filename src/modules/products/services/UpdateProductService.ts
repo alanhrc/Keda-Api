@@ -64,9 +64,10 @@ class UpdateProductService {
       ? String(company).toUpperCase().trim()
       : product.company;
 
-    product.quantity = quantity || product.quantity;
+    product.quantity = Number(quantity) || Number(product.quantity);
 
-    product.minimum_quantity = minimum_quantity || product.minimum_quantity;
+    product.minimum_quantity =
+      Number(minimum_quantity) || Number(product.minimum_quantity);
 
     await this.productRepository.save(product);
 

@@ -23,6 +23,7 @@ export default class ProductController {
       sector,
       company,
       quantity,
+      minimum_quantity,
     } = request.body;
 
     const createProduct = container.resolve(CreateProductService);
@@ -36,6 +37,7 @@ export default class ProductController {
       sector,
       company,
       quantity,
+      minimum_quantity,
     });
 
     return response.json(classToClass(product));
@@ -71,6 +73,7 @@ export default class ProductController {
       sector,
       company,
       quantity,
+      minimum_quantity,
     } = request.body;
 
     const updateProductService = container.resolve(UpdateProductService);
@@ -85,6 +88,7 @@ export default class ProductController {
       sector,
       company,
       quantity,
+      minimum_quantity,
     });
 
     return response.json(classToClass(product));
