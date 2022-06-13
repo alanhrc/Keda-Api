@@ -42,6 +42,9 @@ class Product {
   @Column('int4')
   quantity: number;
 
+  @Column('int4')
+  minimum_quantity: number;
+
   @Column('bool')
   isActive: boolean;
 

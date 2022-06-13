@@ -14,6 +14,7 @@ interface IRequest {
   sector: string;
   company: string;
   quantity: number;
+  minimum_quantity: number;
 }
 
 @injectable()
@@ -21,7 +22,7 @@ class UpdateProductService {
   constructor(
     @inject('ProductRepository')
     private productRepository: IProductRepository, // @inject('CacheProvider') // private cacheProvider: ICacheProvider,
-  ) {}
+  ) { }
 
   public async execute({
     id,
@@ -33,6 +34,7 @@ class UpdateProductService {
     sector,
     company,
     quantity,
+    minimum_quantity,
   }: IRequest): Promise<Product | undefined> {
     const product = await this.productRepository.findById(id);
 
@@ -61,7 +63,10 @@ class UpdateProductService {
     product.company = company
       ? String(company).toUpperCase().trim()
       : product.company;
+
     product.quantity = quantity || product.quantity;
+
+    product.minimum_quantity = minimum_quantity || product.minimum_quantity;
 
     await this.productRepository.save(product);
 

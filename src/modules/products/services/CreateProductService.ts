@@ -13,6 +13,7 @@ interface IRequest {
   sector: string;
   company: string;
   quantity: number;
+  minimum_quantity: number;
 }
 
 @injectable()
@@ -20,7 +21,7 @@ class CreateProductService {
   constructor(
     @inject('ProductRepository')
     private productRepository: IProductRepository, // @inject('NotificationsRepository') // private notificationsRepository: INotificationsRepository, // @inject('CacheProvider') // private cacheProvider: ICacheProvider,
-  ) {}
+  ) { }
 
   public async execute({
     description,
@@ -31,6 +32,7 @@ class CreateProductService {
     sector,
     company,
     quantity,
+    minimum_quantity,
   }: IRequest): Promise<Product> {
     const existentProduct = await this.productRepository.findByCode(
       number_code,
@@ -59,6 +61,7 @@ class CreateProductService {
       sector: sector ? String(sector).toUpperCase().trim() : sector,
       company: company ? String(company).toUpperCase().trim() : company,
       quantity: quantity || 0,
+      minimum_quantity: minimum_quantity || 0,
     });
 
     return product;
