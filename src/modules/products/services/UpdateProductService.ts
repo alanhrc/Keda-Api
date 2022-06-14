@@ -57,9 +57,11 @@ class UpdateProductService {
     product.observation = observation
       ? String(observation).toUpperCase().trim()
       : product.observation;
+
     product.sector = sector
       ? String(sector).toUpperCase().trim()
       : product.sector;
+
     product.company = company
       ? String(company).toUpperCase().trim()
       : product.company;
@@ -68,9 +70,7 @@ class UpdateProductService {
       ? Number(quantity)
       : Number(product.quantity);
 
-    product.minimum_quantity = Number(minimum_quantity)
-      ? Number(minimum_quantity)
-      : Number(product.minimum_quantity);
+    product.minimum_quantity = Number(minimum_quantity);
 
     await this.productRepository.save(product);
 
